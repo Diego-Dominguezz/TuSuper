@@ -27,9 +27,29 @@
 
         <div class="icons">
             <div class="fas fa-bars" id="menu-btn"></div>
-            <div class="fas fa-search" id="search-btn"></div>
+            <!-- <div class="fas fa-search" id="search-btn"></div> -->
             <div class="fas fa-shopping-cart" id="cart-btn"></div>
-            <div class="fas fa-user" id="login-btn"></div>
+            <!-- <div class="fas fa-user" id="login-btn"></div> -->
+        </div>
+
+        <!-- The Modal -->
+        <div id="myModal" class="modal">
+
+            <!-- Modal content -->
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Your Shopping Cart</h2>
+                <table>
+                    <tr>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                    </tr>
+                    <!-- You can add rows here with each product -->
+                </table>
+                <button id="checkout-cart-button">Checkout</button>
+            </div>
+
         </div>
 
         <form class="search-form">
@@ -37,7 +57,7 @@
             <label for="search-box" class="fas fa-search"></label>
         </form>
 
-        <div class="shopping-cart">
+        <!-- <div class="shopping-cart">
             <div class="box">
                 <i class="fas fa-trash"></i>
                 <img src="image/cart-img-1.png" alt="">
@@ -67,7 +87,7 @@
             </div>
             <div class="total"> total : $19.69/- </div>
             <a href="#" class="btn">checkout</a>
-        </div>
+        </div> -->
 
         <form action="" class="login-form">
             <h3>Iniciar sesion</h3>
@@ -178,7 +198,7 @@
                 <div class="swiper-slide box">
                     <img src="image/product-1.png" alt="">
                     <h3>naranja fresca</h3>
-                    <div class="price"> $4.99/- - 10.99/- </div>
+                    <div class="price"> <span></span>$<span class="priceNumber">5</span></div>
                     <div class="stars">
                         <i class="fas fa-star"></i>
                         <i class="fas fa-star"></i>
@@ -192,7 +212,7 @@
                 <div class="swiper-slide box">
                     <img src="image/product-2.png" alt="">
                     <h3>cebolla</h3>
-                    <div class="price"> $4.99/- - 10.99/- </div>
+                    <div class="price"> <span></span>$<span class="priceNumber">3</span></div>
                     <div class="stars">
                         <i class="fas fa-star"></i>
                         <i class="fas fa-star"></i>
@@ -206,7 +226,7 @@
                 <div class="swiper-slide box">
                     <img src="image/product-3.png" alt="">
                     <h3>carne</h3>
-                    <div class="price"> $4.99/- - 10.99/- </div>
+                    <div class="price"> <span></span>$<span class="priceNumber">8</span></div>
                     <div class="stars">
                         <i class="fas fa-star"></i>
                         <i class="fas fa-star"></i>
@@ -220,7 +240,7 @@
                 <div class="swiper-slide box">
                     <img src="image/product-4.png" alt="">
                     <h3>lechuga</h3>
-                    <div class="price"> $4.99/- - 10.99/- </div>
+                    <div class="price"> <span></span>$<span class="priceNumber">2</span></div>
                     <div class="stars">
                         <i class="fas fa-star"></i>
                         <i class="fas fa-star"></i>
@@ -242,7 +262,7 @@
                 <div class="swiper-slide box">
                     <img src="image/product-5.png" alt="">
                     <h3>papa</h3>
-                    <div class="price"> $4.99/- - 10.99/- </div>
+                    <div class="price"> <span></span>$<span class="priceNumber">4</span></div>
                     <div class="stars">
                         <i class="fas fa-star"></i>
                         <i class="fas fa-star"></i>
@@ -256,7 +276,7 @@
                 <div class="swiper-slide box">
                     <img src="image/product-6.png" alt="">
                     <h3>aguacate</h3>
-                    <div class="price"> $4.99/- - 10.99/- </div>
+                    <div class="price"> <span></span>$<span class="priceNumber">10</span></div>
                     <div class="stars">
                         <i class="fas fa-star"></i>
                         <i class="fas fa-star"></i>
@@ -270,7 +290,7 @@
                 <div class="swiper-slide box">
                     <img src="image/product-7.png" alt="">
                     <h3>zanahoria</h3>
-                    <div class="price"> $4.99/- - 10.99/- </div>
+                    <div class="price"> <span></span>$<span class="priceNumber">3</span></div>
                     <div class="stars">
                         <i class="fas fa-star"></i>
                         <i class="fas fa-star"></i>
@@ -284,7 +304,7 @@
                 <div class="swiper-slide box">
                     <img src="image/product-8.png" alt="">
                     <h3>limon verde</h3>
-                    <div class="price"> $4.99/- - 10.99/- </div>
+                    <div class="price"> <span></span>$<span class="priceNumber">5</span></div>
                     <div class="stars">
                         <i class="fas fa-star"></i>
                         <i class="fas fa-star"></i>
@@ -458,7 +478,257 @@
     <script src="js/script.js"></script>
 
     <script>
-        var swiper = new Swiper(".review-slider", {
+
+        // Array of products
+        var products = [
+        ];
+        // Declare updateGrandTotal as a global function
+        function updateGrandTotal(table) {
+            var grandTotal = Array.from(table.querySelectorAll('.price')).reduce(function (total, cell) {
+                return total + parseFloat(cell.textContent);
+            }, 0);
+
+            var grandTotalRow = table.querySelector('tr.grand-total');
+
+            if (!grandTotalRow) {
+                grandTotalRow = document.createElement('tr');
+                grandTotalRow.classList.add('grand-total');
+
+                var grandTotalCell = document.createElement('td');
+                grandTotalCell.colSpan = 3;
+                grandTotalCell.textContent = 'total: ';
+
+                var totalCell = document.createElement('td');
+                totalCell.textContent = grandTotal;
+
+                grandTotalRow.appendChild(grandTotalCell);
+                grandTotalRow.appendChild(totalCell);
+
+                table.appendChild(grandTotalRow);
+            } else {
+                grandTotalRow.querySelector('td:last-child').textContent = grandTotal;
+            }
+        }
+
+        function updateModalContent() {
+            var table = document.querySelector('.modal-content table');
+            var product = products[products.length - 1];
+            var row = table.querySelector('tr[data-name="' + product.name + '"]');
+
+            if (row) {
+                var quantityCell = row.querySelector('.quantity');
+                var priceCell = row.querySelector('.price');
+                quantityCell.textContent = parseInt(quantityCell.textContent) + product.quantity;
+                priceCell.textContent = parseFloat(priceCell.textContent) + product.price;
+            } else {
+                row = document.createElement('tr');
+                row.setAttribute('data-name', product.name);
+
+                var nameCell = document.createElement('td');
+                nameCell.textContent = product.name;
+
+                var quantityCell = document.createElement('td');
+                quantityCell.classList.add('quantity');
+                quantityCell.textContent = product.quantity;
+
+                var priceCell = document.createElement('td');
+                priceCell.classList.add('price');
+                priceCell.textContent = product.price;
+
+                var deleteCell = document.createElement('td');
+                var deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.addEventListener('click', function () {
+                    removeOneQuantity(row, table, product.price);
+                });
+                deleteCell.appendChild(deleteButton);
+
+                row.appendChild(nameCell);
+                row.appendChild(quantityCell);
+                row.appendChild(priceCell);
+                row.appendChild(deleteCell);
+
+                table.appendChild(row);
+            }
+
+            var grandTotalRow = table.querySelector('tr.grand-total');
+            if (grandTotalRow) {
+                grandTotalRow.remove();
+            }
+
+            updateGrandTotal(table);
+        }
+
+        function removeOneQuantity(row, table, productPrice) {
+            var quantityCell = row.querySelector('.quantity');
+            var priceCell = row.querySelector('.price');
+
+            var currentQuantity = parseInt(quantityCell.textContent);
+            var currentPrice = parseFloat(priceCell.textContent);
+
+            if (currentQuantity > 1) {
+                quantityCell.textContent = currentQuantity - 1;
+                priceCell.textContent = currentPrice - productPrice;
+            } else {
+                row.remove();
+            }
+
+            updateGrandTotal(table);
+        }
+
+        // Select the table
+        var table = document.querySelector('#myModal table');
+
+        // Loop through the products
+        for (var i = 0; i < products.length; i++) {
+            // Create a table row
+            var row = document.createElement('tr');
+
+            // Create cells for the product name, quantity, and price
+            var nameCell = document.createElement('td');
+            var quantityCell = document.createElement('td');
+            var priceCell = document.createElement('td');
+
+            // Set the text content of the cells
+            nameCell.textContent = products[i].name;
+            quantityCell.textContent = products[i].quantity;
+            priceCell.textContent = products[i].price;
+
+            // Append the cells to the row
+            row.appendChild(nameCell);
+            row.appendChild(quantityCell);
+            row.appendChild(priceCell);
+
+            // Append the row to the table
+            table.appendChild(row);
+        }
+
+        window.onload = function () {
+            // Select all buttons inside the "features" class
+            var optionsbuttons = document.querySelectorAll('.features .btn');
+            var categoriasBtns = document.querySelectorAll('.categories .btn');
+
+            // Add an event listener to each button
+            optionsbuttons.forEach(function (button) {
+                button.addEventListener('click', function (event) {
+                    event.preventDefault(); // Prevent the default action
+
+                    // Get the h3 sibling of the button
+                    var h3 = button.parentElement.querySelector('h3');
+
+                    // If the h3 exists, display its text content in an alert
+                    if (h3) {
+                        alert(h3.textContent);
+                    }
+                });
+            });
+            categoriasBtns.forEach(function (button) {
+                button.addEventListener('click', function (event) {
+                    event.preventDefault(); // Prevent the default action
+
+                    // Get the h3 sibling of the button
+                    var h3 = button.parentElement.querySelector('h3');
+
+                    // If the h3 exists, display its text content in an alert
+                    if (h3) {
+                        alert(h3.textContent);
+                    }
+                });
+            });
+        };
+
+        // Select the form
+        var form = document.querySelector('.login-form');
+
+        // Get all elements in the form
+        var formElements = form.elements;
+
+        // Loop through each element
+        for (var i = 0; i < formElements.length; i++) {
+            // Set the disabled property to true
+            formElements[i].disabled = true;
+        }
+
+        // Select the shopping cart button
+        var cartBtn = document.getElementById('cart-btn');
+
+        // Add a click event listener to the button
+        cartBtn.addEventListener('click', function () {
+            // Display the modal
+            // Assuming you have a modal with id 'myModal'
+            console.log('click');
+            var modal = document.getElementById('myModal');
+            modal.style.display = "block";
+        });
+
+        // Get the modal
+        var modal = document.getElementById('myModal');
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function () {
+            modal.style.display = "none";
+        }
+
+        var checkout = document.getElementById('checkout-cart-button');
+
+        checkout.onclick = function () {
+            modal.style.display = "none";
+            alert("Gracias por su compra! checkout")
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        // Define the event handler function
+        function handleButtonClick(event) {
+            // Prevent the default action
+            event.preventDefault();
+
+            // Get the product name, quantity, and price
+            var name = this.parentElement.querySelector('h3').textContent;
+            var quantity = 1;
+            var price = parseFloat(this.parentElement.querySelector('.priceNumber').textContent);
+
+            // Create a JSON object
+            var product = { name: name, quantity: quantity, price: price };
+
+            // Log the JSON object
+            products.push(product);
+            console.log(product, products);
+            updateModalContent();
+        }
+
+        // Define a function that attaches event listeners to the buttons
+        function attachEventListeners() {
+            // Select all the "agregar al carrito" buttons inside a "swiper-wrapper" element
+            var buttons = document.querySelectorAll('.swiper-wrapper .btn');
+
+            // Loop through each button
+            for (var i = 0; i < buttons.length; i++) {
+                // Remove any existing event listeners from the button
+                buttons[i].removeEventListener('click', handleButtonClick);
+
+                // Add an event listener to the button
+                buttons[i].addEventListener('click', handleButtonClick);
+            }
+        }
+
+        // Initialize the MutationObserver
+        var observer = new MutationObserver(attachEventListeners);
+
+        // Start observing the document with the configured parameters
+        observer.observe(document, { childList: true, subtree: true });
+
+
+
+        var swiper1 = new Swiper(".review-slider", {
             loop: true,
             spaceBetween: 20,
             autoplay: {
@@ -478,9 +748,10 @@
                 },
             },
         });
+
     </script>
     <script>
-        var swiper = new Swiper(".product-slider", {
+        var swiper2 = new Swiper(".product-slider", {
             loop: true,
             spaceBetween: 20,
             autoplay: {
